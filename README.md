@@ -1,4 +1,4 @@
 # text-hosting
-PHP tetx-hosting script
+PHP text-hosting script
 
 https://landon.pw/projects/paste.php
