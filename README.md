@@ -1,4 +1,11 @@
 # text-hosting
 PHP text-hosting script
 
-https://landon.pw/projects/paste.php
+Very simple PHP text-hosting script. 
+
+## Features
+* 30 Day Deletion
+* Key Support
+* Random Filename Generation
+
+Demo: https://landon.pw/projects/paste.php
