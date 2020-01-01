@@ -1,4 +1,5 @@
 <?php
+# YOU WILL NEED TO MODIFY HEADER LOCATIONS TO REDIRECT TO THE APPROPRIATE PATH.
 if (isset($_POST['submit'])) {
 	$dir = "paste/";
 	foreach (glob($dir."*") as $file) {
