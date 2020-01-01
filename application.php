@@ -1,5 +1,4 @@
 <?php
-# YOU WILL NEED TO MODIFY HEADER LOCATIONS TO REDIRECT TO THE APPROPRIATE PATH.
 if (isset($_POST['submit'])) {
 	$dir = "paste/";
 	foreach (glob($dir."*") as $file) {
@@ -21,6 +20,7 @@ if (isset($_POST['submit'])) {
 			$fileText = $_POST['text'];
 			fwrite($fileOpen, $fileText);
 			fclose($fileOpen);
+			# YOU WILL NEED TO MODIFY HEADER LOCATIONS TO REDIRECT TO THE APPROPRIATE PATH.
 			header('Location: /projects/pastes/' . $fileName);
 			exit();
 		} else {
@@ -33,6 +33,7 @@ if (isset($_POST['submit'])) {
 			$fileText = $_POST['text'];
 			fwrite($fileOpen, $fileText);
 			fclose($fileOpen);
+			# YOU WILL NEED TO MODIFY HEADER LOCATIONS TO REDIRECT TO THE APPROPRIATE PATH.
 			header('Location: /projects/pastes/' . $fileName);
 			exit();
 		}
