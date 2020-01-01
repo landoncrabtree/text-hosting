@@ -8,4 +8,4 @@ Very simple PHP text-hosting script.
 * Key Support
 * Random Filename Generation
 
-Demo: https://landon.pw/projects/paste.php
+Demo: https://projects.landon.pw/paste
