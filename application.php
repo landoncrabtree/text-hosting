@@ -1,6 +1,6 @@
 <?php
 if (isset($_POST['submit'])) {
-	$dir = "paste/";
+	$dir = "./pastes/";
 	foreach (glob($dir."*") as $file) {
 		if (filemtime($file) < time() - 2592000) { // 30 days
     		unlink($file);
@@ -10,19 +10,23 @@ if (isset($_POST['submit'])) {
 		echo "<p>This paste is more than 500kb.</p>";
 	} else {
 		if (isset($_POST['key'])) {
-			$charSet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-			$charLength = strlen($charSet);
-			$extension = '';
 			$key = $_POST['key'];
-			for ($i = 0; $i < 7; $i++) { $extension .= $charSet[rand(0, $charLength - 1)]; }
-   			$fileName = '' . $extension . '.txt.' . $key . '';
-			$fileOpen = fopen("./pastes/" . $fileName, 'w');
-			$fileText = $_POST['text'];
-			fwrite($fileOpen, $fileText);
-			fclose($fileOpen);
-			# YOU WILL NEED TO MODIFY HEADER LOCATIONS TO REDIRECT TO THE APPROPRIATE PATH.
-			header('Location: /projects/pastes/' . $fileName);
-			exit();
+			if (strpos($key, 'php') !== false) {
+				echo "<p>That key is not allowed.</p>";
+			} else {
+				$charSet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				$charLength = strlen($charSet);
+				$extension = '';
+				for ($i = 0; $i < 7; $i++) { $extension .= $charSet[rand(0, $charLength - 1)]; }
+   				$fileName = '' . $extension . '.txt.' . $key . '';
+				$fileOpen = fopen("./pastes/" . $fileName, 'w');
+				$fileText = $_POST['text'];
+				fwrite($fileOpen, $fileText);
+				fclose($fileOpen);
+				# YOU WILL NEED TO MODIFY HEADER LOCATIONS TO REDIRECT TO THE APPROPRIATE PATH.
+				header('Location: /pastes/' . $fileName);
+				exit();
+			}
 		} else {
 			$charSet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 			$charLength = strlen($charSet);
@@ -34,7 +38,7 @@ if (isset($_POST['submit'])) {
 			fwrite($fileOpen, $fileText);
 			fclose($fileOpen);
 			# YOU WILL NEED TO MODIFY HEADER LOCATIONS TO REDIRECT TO THE APPROPRIATE PATH.
-			header('Location: /projects/pastes/' . $fileName);
+			header('Location: /pastes/' . $fileName);
 			exit();
 		}
 	}
