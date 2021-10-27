@@ -18,7 +18,7 @@ if (isset($_POST['submit'])) {
 				$charLength = strlen($charSet);
 				$extension = '';
 				for ($i = 0; $i < 7; $i++) { $extension .= $charSet[rand(0, $charLength - 1)]; }
-   				$fileName = '' . $extension . '.txt.' . $key . '';
+   				$fileName = '' . $extension . '.' . $key . '.txt';
 				$fileOpen = fopen("./pastes/" . $fileName, 'w');
 				$fileText = $_POST['text'];
 				fwrite($fileOpen, $fileText);
