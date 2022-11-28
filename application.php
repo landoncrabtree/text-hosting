@@ -1,46 +1,69 @@
 <?php
+
+$err = "";
+$has_err = false;
+
+function generateRandomString($length = 10) {
+	$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	$charactersLength = strlen($characters);
+	$randomString = '';
+	for ($i = 0; $i < $length; $i++) {
+		$randomString .= $characters[rand(0, $charactersLength - 1)];
+	}
+	return $randomString;
+}
+
+function writeToFile($data, $fileName) {
+	$fileOpen = fopen("./pastes/" . $fileName, "w") or die("Unable to open file!");
+	$fileText = $data;
+	fwrite($fileOpen, $fileText);
+	fclose($fileOpen);
+}
+
 if (isset($_POST['submit'])) {
+
+	// Remove files from past 30 days.
 	$dir = "./pastes/";
 	foreach (glob($dir."*") as $file) {
 		if (filemtime($file) < time() - 2592000) { // 30 days
     		unlink($file);
-    }
-}
+    	}
+	}
+
+	// Validate size of paste.
 	if (strlen($_POST['text']) >= 64000) {
-		echo "<p>This paste is more than 500kb.</p>";
+		$err = "Your paste is too long.";
+        $has_err = true;
 	} else {
-		if (isset($_POST['key'])) {
-			$key = $_POST['key'];
-			if (strpos($key, 'php') !== false) {
-				echo "<p>That key is not allowed.</p>";
-			} else {
-				$charSet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-				$charLength = strlen($charSet);
-				$extension = '';
-				for ($i = 0; $i < 7; $i++) { $extension .= $charSet[rand(0, $charLength - 1)]; }
-   				$fileName = '' . $extension . '.' . $key . '.txt';
-				$fileOpen = fopen("./pastes/" . $fileName, 'w');
-				$fileText = $_POST['text'];
-				fwrite($fileOpen, $fileText);
-				fclose($fileOpen);
-				# YOU WILL NEED TO MODIFY HEADER LOCATIONS TO REDIRECT TO THE APPROPRIATE PATH.
-				header('Location: /pastes/' . $fileName);
-				exit();
-			}
-		} else {
-			$charSet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-			$charLength = strlen($charSet);
-			$extension = '';
-			for ($i = 0; $i < 7; $i++) { $extension .= $charSet[rand(0, $charLength - 1)]; }
-   			$fileName = '' . $extension . '.txt';
-			$fileOpen = fopen("./pastes/" . $fileName, 'w');
-			$fileText = $_POST['text'];
-			fwrite($fileOpen, $fileText);
-			fclose($fileOpen);
-			# YOU WILL NEED TO MODIFY HEADER LOCATIONS TO REDIRECT TO THE APPROPRIATE PATH.
-			header('Location: /pastes/' . $fileName);
-			exit();
-		}
+		$key = strtolower($_POST["key"]);
+
+        // Check for "php" in key.
+        if (strpos($key, "php") !== false) {
+            $err = "Your paste contains a forbidden word.";
+            $has_err = true;
+        }
+
+        // Regex to check key for non-alphanumeric characters.
+        if (preg_match('/[^A-Za-z0-9]/', $key)) {
+            $err = "Your paste contains a forbidden word.";
+            $has_err = true;
+        }
+
+        if ($has_err == false) {
+            if ($key == "") {
+                $extension = generateRandomString(8);
+                $fileName = $extension . ".txt";
+                writeToFile($_POST['text'], $fileName);
+                header('Location: /pastes/' . $fileName);
+                exit();
+            } else {
+                $extension = generateRandomString(8);
+                $fileName = $extension . "." . $key . ".txt";
+                writeToFile($_POST['text'], $fileName);
+                header('Location: /pastes/' . $fileName);
+                exit();
+            }
+        }
 	}
 }
 ?>
@@ -49,9 +72,15 @@ if (isset($_POST['submit'])) {
 <html lang="en">
 <head>
     <title>Text Hosting Script</title>
+	<meta name="robots" content="noindex,nofollow">
 </head>
 <body>
 	<h3>Text Hosting</h3>
+	<?php 
+		if ($err != "") {
+			echo "<p>" . $err . "</p>";
+		}
+	?>
 	<form action="#" method="post" style="height:100%">
 		<textarea type="text" rows="20" cols="4" size="50" name="text" style="width:100%;height:95%"></textarea><br><br>
 		<input name="key" placeholder="text key [optional]" type="text" style="height:100%; width:20%"><br>
